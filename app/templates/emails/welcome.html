@@ -1,0 +1,36 @@
+{% extends "emails/_base.html" %}
+{% block content %}
+<h2 style="margin: 0 0 16px 0; color: #1e293b; font-size: 24px;">Welcome, {{ user.name }}! 🎉</h2>
+<p style="margin: 0 0 16px 0; color: #475569; line-height: 1.6; font-size: 15px;">
+    We're thrilled to have you join <strong>AI Recruit Pro</strong> — the smartest hiring platform powered by cutting-edge AI.
+</p>
+
+{% if user.role == 'Owner' %}
+<p style="margin: 0 0 16px 0; color: #475569; line-height: 1.6; font-size: 15px;">As a recruiter, you can:</p>
+<ul style="margin: 0 0 24px 0; color: #475569; line-height: 1.8; font-size: 15px; padding-left: 20px;">
+    <li>📝 Post unlimited jobs</li>
+    <li>🤖 Use our RAG-powered AI assistant to find perfect candidates</li>
+    <li>📊 Track applications with beautiful analytics</li>
+    <li>⚡ Automate your entire hiring workflow</li>
+</ul>
+{% else %}
+<p style="margin: 0 0 16px 0; color: #475569; line-height: 1.6; font-size: 15px;">As a candidate, you can:</p>
+<ul style="margin: 0 0 24px 0; color: #475569; line-height: 1.8; font-size: 15px; padding-left: 20px;">
+    <li>🔍 Browse curated job opportunities</li>
+    <li>📄 Upload your resume once — our AI extracts everything</li>
+    <li>🎯 See instant match scores for any job</li>
+    <li>📬 Get real-time updates on your applications</li>
+</ul>
+{% endif %}
+
+<div style="text-align: center; margin: 32px 0;">
+    <a href="{{ cta_url or '#' }}" 
+       style="display: inline-block; padding: 14px 32px; background: linear-gradient(135deg, #6366F1 0%, #A855F7 100%); color: white; text-decoration: none; border-radius: 12px; font-weight: 600; font-size: 15px;">
+        Sign In to Get Started →
+    </a>
+</div>
+
+<p style="margin: 0; color: #94a3b8; font-size: 13px; text-align: center;">
+    Questions? Just reply to this email — we're here to help.
+</p>
+{% endblock %}

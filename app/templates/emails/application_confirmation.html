@@ -1,0 +1,44 @@
+{% extends "emails/_base.html" %}
+{% block content %}
+<h2 style="margin: 0 0 16px 0; color: #1e293b; font-size: 22px;">✅ Application Received!</h2>
+<p style="margin: 0 0 16px 0; color: #475569; line-height: 1.6; font-size: 15px;">
+    Hi <strong>{{ application.full_name }}</strong>, your application for <strong>{{ job.title }}</strong> has been received.
+</p>
+
+<div style="background: linear-gradient(135deg, #ecfdf5 0%, #f0fdfa 100%); border: 1px solid #a7f3d0; border-radius: 12px; padding: 20px; margin: 24px 0;">
+    <p style="margin: 0 0 12px 0; color: #065f46; font-weight: 700; font-size: 15px;">📋 Application Summary</p>
+    <table cellpadding="4" cellspacing="0" border="0" width="100%">
+        <tr>
+            <td style="color: #047857; font-size: 14px;">Position:</td>
+            <td style="color: #064e3b; font-weight: 600; font-size: 14px;">{{ job.title }}</td>
+        </tr>
+        <tr>
+            <td style="color: #047857; font-size: 14px;">Company:</td>
+            <td style="color: #064e3b; font-weight: 600; font-size: 14px;">{{ job.company or 'Confidential' }}</td>
+        </tr>
+        <tr>
+            <td style="color: #047857; font-size: 14px;">Location:</td>
+            <td style="color: #064e3b; font-weight: 600; font-size: 14px;">{{ job.location }}</td>
+        </tr>
+        <tr>
+            <td style="color: #047857; font-size: 14px;">Match Score:</td>
+            <td style="color: #064e3b; font-weight: 600; font-size: 14px;">{{ application.match_score|round|int }}%</td>
+        </tr>
+    </table>
+</div>
+
+<p style="margin: 0 0 24px 0; color: #475569; line-height: 1.6; font-size: 15px;">
+    The hiring team will review your application and reach out if there's a match. You'll receive updates via email as your application progresses.
+</p>
+
+<div style="text-align: center; margin: 24px 0;">
+    <a href="{{ dashboard_url or '#' }}" 
+       style="display: inline-block; padding: 12px 28px; background: linear-gradient(135deg, #6366F1 0%, #A855F7 100%); color: white; text-decoration: none; border-radius: 10px; font-weight: 600; font-size: 14px;">
+        View My Applications →
+    </a>
+</div>
+
+<p style="margin: 16px 0 0 0; color: #475569; line-height: 1.6; font-size: 14px; text-align: center;">
+    💡 <strong>Tip:</strong> Keep an eye on your dashboard for real-time updates!
+</p>
+{% endblock %}

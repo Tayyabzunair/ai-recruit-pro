@@ -1,0 +1,33 @@
+# Core Flask
+Flask==3.0.3
+Flask-SQLAlchemy==3.1.1
+Flask-Migrate==4.0.7
+Flask-Login==0.6.3
+Flask-Bcrypt==1.0.1
+Flask-WTF==1.2.1
+Flask-Mail==0.10.0
+WTForms==3.1.2
+email-validator==2.2.0
+
+# Database
+SQLAlchemy==2.0.35
+alembic==1.13.3
+
+# AI / RAG
+google-generativeai==0.8.3
+sentence-transformers==3.2.1
+chromadb==0.5.15
+langchain==0.3.7
+langchain-google-genai==2.0.4
+langchain-community==0.3.5
+
+# PDF Processing
+PyMuPDF==1.24.11
+
+# Utils
+python-dotenv==1.0.1
+loguru==0.7.2
+APScheduler==3.10.4
+
+# Production
+gunicorn==23.0.0

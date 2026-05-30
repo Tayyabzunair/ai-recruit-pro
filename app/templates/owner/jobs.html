@@ -1,0 +1,127 @@
+{% extends "base.html" %}
+{% block title %}My Jobs | AI Recruit Pro{% endblock %}
+
+{% block content %}
+{% include 'components/navbar.html' %}
+
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    
+    <!-- Header -->
+    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-6" data-aos="fade-down">
+        <div>
+            <h1 class="text-3xl font-display font-bold text-slate-900 dark:text-white">Job Postings</h1>
+            <p class="text-slate-600 dark:text-slate-400 mt-1">Manage your active job listings</p>
+        </div>
+        <a href="{{ url_for('owner.post_job') }}" class="mt-4 sm:mt-0 inline-flex items-center gap-2 px-5 py-2.5 bg-gradient-to-r from-primary-600 to-purple-600 text-white rounded-xl font-semibold shadow-lg shadow-primary-500/30 hover:scale-105 transition">
+            <i data-lucide="plus" class="w-4 h-4"></i>
+            Post New Job
+        </a>
+    </div>
+    
+    <!-- Filter Tabs -->
+    <div class="flex items-center gap-2 mb-6 border-b border-slate-200 dark:border-slate-700">
+        <a href="?status=all" class="px-4 py-2 text-sm font-medium border-b-2 transition {{ 'border-primary-600 text-primary-700 dark:text-primary-400' if status_filter == 'all' else 'border-transparent text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white' }}">All Jobs</a>
+        <a href="?status=active" class="px-4 py-2 text-sm font-medium border-b-2 transition {{ 'border-primary-600 text-primary-700 dark:text-primary-400' if status_filter == 'active' else 'border-transparent text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white' }}">Active</a>
+        <a href="?status=inactive" class="px-4 py-2 text-sm font-medium border-b-2 transition {{ 'border-primary-600 text-primary-700 dark:text-primary-400' if status_filter == 'inactive' else 'border-transparent text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white' }}">Inactive</a>
+    </div>
+    
+    <!-- Jobs List -->
+    {% if jobs.items %}
+        <div class="space-y-4">
+        {% for job in jobs.items %}
+            <div class="bg-white dark:bg-dark-100 rounded-2xl border border-slate-200 dark:border-slate-700 p-6 hover:shadow-lg transition" data-aos="fade-up">
+                <div class="flex flex-col lg:flex-row lg:items-start lg:justify-between gap-4">
+                    
+                    <div class="flex-1">
+                        <div class="flex items-center gap-3 mb-2">
+                            <h3 class="text-lg font-bold text-slate-900 dark:text-white">{{ job.title }}</h3>
+                            {% if job.is_active %}
+                                <span class="px-2.5 py-0.5 bg-emerald-50 text-emerald-700 dark:bg-emerald-500/10 dark:text-emerald-400 text-xs font-semibold rounded-full">Active</span>
+                            {% else %}
+                                <span class="px-2.5 py-0.5 bg-slate-100 text-slate-600 dark:bg-slate-700 dark:text-slate-300 text-xs font-semibold rounded-full">Inactive</span>
+                            {% endif %}
+                            {% if job.is_expired %}
+                                <span class="px-2.5 py-0.5 bg-red-50 text-red-700 dark:bg-red-500/10 dark:text-red-400 text-xs font-semibold rounded-full">Expired</span>
+                            {% endif %}
+                        </div>
+                        
+                        <div class="flex flex-wrap items-center gap-4 text-sm text-slate-600 dark:text-slate-400 mb-3">
+                            <span class="flex items-center gap-1"><i data-lucide="map-pin" class="w-3.5 h-3.5"></i>{{ job.location }}</span>
+                            <span class="flex items-center gap-1"><i data-lucide="briefcase" class="w-3.5 h-3.5"></i>{{ job.job_type }}</span>
+                            <span class="flex items-center gap-1"><i data-lucide="dollar-sign" class="w-3.5 h-3.5"></i>{{ job.salary_range }}</span>
+                            {% if job.deadline %}<span class="flex items-center gap-1"><i data-lucide="calendar" class="w-3.5 h-3.5"></i>{{ job.deadline.strftime('%b %d, %Y') }}</span>{% endif %}
+                        </div>
+                        
+                        <div class="flex flex-wrap gap-1.5 mb-3">
+                            {% for skill in job.skills_list[:6] %}
+                                <span class="px-2.5 py-1 bg-primary-50 text-primary-700 dark:bg-primary-500/10 dark:text-primary-400 text-xs font-medium rounded-md">{{ skill }}</span>
+                            {% endfor %}
+                            {% if job.skills_list|length > 6 %}
+                                <span class="px-2.5 py-1 bg-slate-100 text-slate-600 dark:bg-slate-700 dark:text-slate-300 text-xs font-medium rounded-md">+{{ job.skills_list|length - 6 }} more</span>
+                            {% endif %}
+                        </div>
+                        
+                        <div class="flex items-center gap-4 text-sm">
+                            <a href="{{ url_for('owner.candidates', job_id=job.id) }}" class="flex items-center gap-1 text-primary-600 dark:text-primary-400 hover:text-primary-700 font-medium">
+                                <i data-lucide="users" class="w-4 h-4"></i>
+                                {{ job.applications_count }} application{{ 's' if job.applications_count != 1 else '' }}
+                            </a>
+                            <span class="text-slate-400 dark:text-slate-500">Posted {{ job.created_at.strftime('%b %d, %Y') }}</span>
+                        </div>
+                    </div>
+                    
+                    <!-- Actions -->
+                    <div class="flex items-center gap-2 flex-shrink-0">
+                        <a href="{{ url_for('owner.edit_job', job_id=job.id) }}" class="p-2 text-slate-600 dark:text-slate-400 hover:text-primary-600 hover:bg-primary-50 dark:hover:bg-primary-500/10 rounded-lg transition" title="Edit">
+                            <i data-lucide="edit-2" class="w-4 h-4"></i>
+                        </a>
+                        <form method="POST" action="{{ url_for('owner.toggle_job', job_id=job.id) }}" class="inline">
+                            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                            <button type="submit" class="p-2 text-slate-600 dark:text-slate-400 hover:text-amber-600 hover:bg-amber-50 dark:hover:bg-amber-500/10 rounded-lg transition" title="{{ 'Deactivate' if job.is_active else 'Activate' }}">
+                                <i data-lucide="{{ 'pause' if job.is_active else 'play' }}" class="w-4 h-4"></i>
+                            </button>
+                        </form>
+                        <form method="POST" action="{{ url_for('owner.delete_job', job_id=job.id) }}" class="inline" onsubmit="return confirm('Delete this job and all its applications?')">
+                            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                            <button type="submit" class="p-2 text-slate-600 dark:text-slate-400 hover:text-red-600 hover:bg-red-50 dark:hover:bg-red-500/10 rounded-lg transition" title="Delete">
+                                <i data-lucide="trash-2" class="w-4 h-4"></i>
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+        </div>
+        
+        <!-- Pagination -->
+        {% if jobs.pages > 1 %}
+        <div class="flex items-center justify-center gap-2 mt-8">
+            {% if jobs.has_prev %}
+                <a href="?page={{ jobs.prev_num }}&status={{ status_filter }}" 
+                   class="inline-flex items-center gap-1 px-4 py-2 rounded-lg border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-dark-50 transition text-sm font-medium">
+                    <i data-lucide="chevron-left" class="w-4 h-4"></i> Previous
+                </a>
+            {% endif %}
+            <span class="px-4 py-2 text-sm text-slate-600 dark:text-slate-400">
+                Page <strong class="text-slate-900 dark:text-white">{{ jobs.page }}</strong> of <strong class="text-slate-900 dark:text-white">{{ jobs.pages }}</strong>
+            </span>
+            {% if jobs.has_next %}
+                <a href="?page={{ jobs.next_num }}&status={{ status_filter }}" 
+                   class="inline-flex items-center gap-1 px-4 py-2 rounded-lg border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-dark-50 transition text-sm font-medium">
+                    Next <i data-lucide="chevron-right" class="w-4 h-4"></i>
+                </a>
+            {% endif %}
+        </div>
+        {% endif %}
+    {% else %}
+        <div class="bg-white dark:bg-dark-100 rounded-2xl border-2 border-dashed border-slate-200 dark:border-slate-700 p-16 text-center">
+            <i data-lucide="briefcase" class="w-16 h-16 mx-auto text-slate-300 dark:text-slate-600 mb-4"></i>
+            <h3 class="text-lg font-bold text-slate-700 dark:text-slate-200 mb-2">No jobs yet</h3>
+            <p class="text-slate-500 dark:text-slate-400 mb-6">Create your first job posting to start hiring</p>
+            <a href="{{ url_for('owner.post_job') }}" class="inline-flex items-center gap-2 px-5 py-2.5 bg-gradient-to-r from-primary-600 to-purple-600 text-white rounded-xl font-semibold">
+                <i data-lucide="plus" class="w-4 h-4"></i> Post Your First Job
+            </a>
+        </div>
+    {% endif %}
+</div>
+{% endblock %}

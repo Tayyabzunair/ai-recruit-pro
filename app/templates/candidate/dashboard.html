@@ -1,0 +1,97 @@
+{% extends "base.html" %}
+{% block title %}Dashboard | AI Recruit Pro{% endblock %}
+
+{% block content %}
+{% include 'components/navbar.html' %}
+
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    
+    <!-- Welcome -->
+    <div class="mb-8" data-aos="fade-down">
+        <h1 class="text-3xl font-display font-bold text-slate-900">
+            Hello, <span class="gradient-text">{{ current_user.name.split()[0] }}</span> 👋
+        </h1>
+        <p class="text-slate-600 mt-1">Let's find your dream job today</p>
+    </div>
+    
+    <!-- Stats -->
+    <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
+        <div data-aos="fade-up" data-aos-delay="0" class="bg-white rounded-2xl p-6 border border-slate-200">
+            <div class="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center mb-3">
+                <i data-lucide="send" class="w-5 h-5 text-blue-600"></i>
+            </div>
+            <div class="text-3xl font-bold text-slate-900">{{ total_applied }}</div>
+            <div class="text-sm text-slate-500 mt-1">Applied</div>
+        </div>
+        <div data-aos="fade-up" data-aos-delay="100" class="bg-white rounded-2xl p-6 border border-slate-200">
+            <div class="w-10 h-10 bg-amber-100 rounded-lg flex items-center justify-center mb-3">
+                <i data-lucide="star" class="w-5 h-5 text-amber-600"></i>
+            </div>
+            <div class="text-3xl font-bold text-slate-900">{{ shortlisted }}</div>
+            <div class="text-sm text-slate-500 mt-1">Shortlisted</div>
+        </div>
+        <div data-aos="fade-up" data-aos-delay="200" class="bg-white rounded-2xl p-6 border border-slate-200">
+            <div class="w-10 h-10 bg-purple-100 rounded-lg flex items-center justify-center mb-3">
+                <i data-lucide="video" class="w-5 h-5 text-purple-600"></i>
+            </div>
+            <div class="text-3xl font-bold text-slate-900">{{ interviews }}</div>
+            <div class="text-sm text-slate-500 mt-1">Interviews</div>
+        </div>
+        <div data-aos="fade-up" data-aos-delay="300" class="bg-white rounded-2xl p-6 border border-slate-200">
+            <div class="w-10 h-10 bg-emerald-100 rounded-lg flex items-center justify-center mb-3">
+                <i data-lucide="trophy" class="w-5 h-5 text-emerald-600"></i>
+            </div>
+            <div class="text-3xl font-bold text-slate-900">{{ hired }}</div>
+            <div class="text-sm text-slate-500 mt-1">Hired</div>
+        </div>
+    </div>
+    
+    <!-- Recent Jobs -->
+    <div class="flex items-center justify-between mb-4">
+        <h2 class="text-xl font-bold text-slate-900">Latest Opportunities</h2>
+        <a href="{{ url_for('candidate.jobs') }}" class="text-sm text-primary-600 hover:text-primary-700 font-medium">Browse all →</a>
+    </div>
+    
+    {% if recent_jobs %}
+    <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
+        {% for job in recent_jobs %}
+            {% include 'components/job_card.html' %}
+        {% endfor %}
+    </div>
+    {% else %}
+        <div class="bg-white rounded-2xl border-2 border-dashed border-slate-200 p-12 text-center">
+            <i data-lucide="briefcase" class="w-12 h-12 mx-auto text-slate-300 mb-3"></i>
+            <p class="text-slate-500">No jobs available right now. Check back later!</p>
+        </div>
+    {% endif %}
+    
+    <!-- My Recent Applications -->
+    {% if my_applications %}
+    <div class="mt-10">
+        <div class="flex items-center justify-between mb-4">
+            <h2 class="text-xl font-bold text-slate-900">My Recent Applications</h2>
+            <a href="{{ url_for('candidate.my_applications') }}" class="text-sm text-primary-600 hover:text-primary-700 font-medium">View all →</a>
+        </div>
+        
+        <div class="bg-white rounded-2xl border border-slate-200 overflow-hidden">
+            <div class="divide-y divide-slate-100">
+                {% for app in my_applications %}
+                <div class="p-4 hover:bg-slate-50 transition flex items-center gap-4">
+                    <div class="w-10 h-10 bg-primary-100 rounded-lg flex items-center justify-center">
+                        <i data-lucide="briefcase" class="w-5 h-5 text-primary-600"></i>
+                    </div>
+                    <div class="flex-1">
+                        <div class="font-semibold text-slate-900">{{ app.job.title }}</div>
+                        <div class="text-xs text-slate-500">{{ app.job.company }} · {{ app.applied_at.strftime('%b %d, %Y') }}</div>
+                    </div>
+                    {% set sc = 'emerald' if app.status == 'Hired' else 'red' if app.status == 'Rejected' else 'blue' if app.status == 'Interview' else 'amber' if app.status == 'Shortlisted' else 'slate' %}
+                    <span class="px-3 py-1 bg-{{ sc }}-50 text-{{ sc }}-700 text-xs font-semibold rounded-full">{{ app.status }}</span>
+                    <div class="px-3 py-1 bg-primary-50 text-primary-700 text-sm font-bold rounded-lg">{{ app.match_score|round|int }}%</div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

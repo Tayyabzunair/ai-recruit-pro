@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth" x-data="{ 
+    darkMode: localStorage.getItem('darkMode') === 'true' || 
+              (localStorage.getItem('darkMode') === null && window.matchMedia('(prefers-color-scheme: dark)').matches)
+}" 
+:class="{ 'dark': darkMode }"
+x-init="$watch('darkMode', val => localStorage.setItem('darkMode', val))">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="AI-Powered Smart Job Portal with RAG Chatbot">
+    <meta name="theme-color" content="#6366F1">
+    <title>{% block title %}AI Recruit Pro{% endblock %}</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        primary: {
+                            50:  '#EEF2FF', 100: '#E0E7FF', 200: '#C7D2FE',
+                            300: '#A5B4FC', 400: '#818CF8', 500: '#6366F1',
+                            600: '#4F46E5', 700: '#4338CA', 800: '#3730A3', 900: '#312E81',
+                        },
+                        accent: { 500: '#F59E0B', 600: '#D97706' },
+                        dark: {
+                            50: '#1E293B', 100: '#172033', 200: '#0F172A',
+                            300: '#0A0F1C', 400: '#070B14',
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'system-ui', 'sans-serif'],
+                        display: ['Plus Jakarta Sans', 'sans-serif'],
+                    },
+                    animation: {
+                        'fade-in': 'fadeIn 0.5s ease-in-out',
+                        'slide-up': 'slideUp 0.5s ease-out',
+                        'slide-down': 'slideDown 0.5s ease-out',
+                        'pulse-slow': 'pulse 3s infinite',
+                        'gradient': 'gradient 8s ease infinite',
+                        'float': 'float 6s ease-in-out infinite',
+                        'shimmer': 'shimmer 2s linear infinite',
+                        'spin-slow': 'spin 8s linear infinite',
+                    },
+                    keyframes: {
+                        fadeIn: { '0%': { opacity: 0 }, '100%': { opacity: 1 } },
+                        slideUp: { 
+                            '0%': { transform: 'translateY(20px)', opacity: 0 },
+                            '100%': { transform: 'translateY(0)', opacity: 1 }
+                        },
+                        slideDown: {
+                            '0%': { transform: 'translateY(-20px)', opacity: 0 },
+                            '100%': { transform: 'translateY(0)', opacity: 1 }
+                        },
+                        gradient: {
+                            '0%, 100%': { 'background-position': '0% 50%' },
+                            '50%': { 'background-position': '100% 50%' }
+                        },
+                        float: {
+                            '0%, 100%': { transform: 'translateY(0px)' },
+                            '50%': { transform: 'translateY(-20px)' }
+                        },
+                        shimmer: {
+                            '0%': { 'background-position': '-1000px 0' },
+                            '100%': { 'background-position': '1000px 0' }
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <!-- Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    
+    <!-- Alpine.js -->
+    <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    
+    <!-- GSAP for premium animations -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+    
+    <!-- AOS -->
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    
+    <style>
+        * { -webkit-tap-highlight-color: transparent; }
+        body { font-family: 'Inter', sans-serif; }
+        .font-display { font-family: 'Plus Jakarta Sans', sans-serif; }
+        
+        /* Smooth dark mode transitions */
+        html { transition: background-color 0.3s ease, color 0.3s ease; }
+        body, .bg-white, .bg-slate-50, .bg-slate-100, 
+        [class*="border-slate"], [class*="text-slate"] {
+            transition: background-color 0.3s ease, border-color 0.3s ease, color 0.3s ease;
+        }
+        
+        /* Custom scrollbar */
+        ::-webkit-scrollbar { width: 8px; height: 8px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
+        .dark ::-webkit-scrollbar-thumb { background: #334155; }
+        .dark ::-webkit-scrollbar-thumb:hover { background: #475569; }
+        
+        /* Gradient text */
+        .gradient-text {
+            background: linear-gradient(135deg, #6366F1 0%, #A855F7 50%, #EC4899 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            background-size: 200% 200%;
+            animation: gradient 8s ease infinite;
+        }
+        
+        /* Glassmorphism */
+        .glass {
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+        .dark .glass {
+            background: rgba(15, 23, 42, 0.7);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        /* Animated background */
+        .animated-bg {
+            background: linear-gradient(-45deg, #6366F1, #8B5CF6, #EC4899, #F59E0B);
+            background-size: 400% 400%;
+            animation: gradient 15s ease infinite;
+        }
+        
+        /* Premium card */
+        .premium-card {
+            position: relative;
+            overflow: hidden;
+        }
+        .premium-card::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(45deg, transparent, rgba(99, 102, 241, 0.05), transparent);
+            transform: rotate(45deg);
+            transition: all 0.6s;
+            opacity: 0;
+        }
+        .premium-card:hover::before {
+            opacity: 1;
+            animation: shimmer 1.5s ease;
+        }
+        
+        /* Hover lift effect */
+        .hover-lift {
+            transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.3s ease;
+        }
+        .hover-lift:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 20px 40px -15px rgba(99, 102, 241, 0.25);
+        }
+        
+        /* Page transition */
+        @keyframes pageIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        main, .page-content { animation: pageIn 0.4s ease-out; }
+        
+        /* Loading shimmer */
+        .skeleton {
+            background: linear-gradient(90deg, #f1f5f9 0%, #e2e8f0 50%, #f1f5f9 100%);
+            background-size: 1000px 100%;
+            animation: shimmer 2s linear infinite;
+        }
+        .dark .skeleton {
+            background: linear-gradient(90deg, #1e293b 0%, #334155 50%, #1e293b 100%);
+            background-size: 1000px 100%;
+        }
+        
+        [x-cloak] { display: none !important; }
+    </style>
+    
+    {% block head_extra %}{% endblock %}
+</head>
+<body class="bg-slate-50 dark:bg-dark-200 text-slate-900 dark:text-slate-100 antialiased min-h-screen">
+    
+    <!-- Flash Messages -->
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+        <div class="fixed top-4 right-4 z-50 space-y-2" 
+             x-data="{ show: true }" 
+             x-show="show" 
+             x-init="setTimeout(() => show = false, 5000)">
+            {% for category, message in messages %}
+            <div class="flex items-center gap-3 px-5 py-3 rounded-xl shadow-2xl max-w-md
+                {% if category == 'success' %}bg-emerald-500 text-white
+                {% elif category == 'danger' %}bg-red-500 text-white
+                {% elif category == 'warning' %}bg-amber-500 text-white
+                {% else %}bg-blue-500 text-white{% endif %}
+                animate-slide-down">
+                <i data-lucide="{% if category == 'success' %}check-circle{% elif category == 'danger' %}alert-circle{% elif category == 'warning' %}alert-triangle{% else %}info{% endif %}" 
+                   class="w-5 h-5 flex-shrink-0"></i>
+                <span class="text-sm font-medium">{{ message }}</span>
+                <button @click="show = false" class="ml-auto opacity-70 hover:opacity-100">
+                    <i data-lucide="x" class="w-4 h-4"></i>
+                </button>
+            </div>
+            {% endfor %}
+        </div>
+        {% endif %}
+    {% endwith %}
+    
+    <main>{% block content %}{% endblock %}</main>
+    
+    <script>
+        lucide.createIcons();
+        AOS.init({ duration: 800, once: true, offset: 50 });
+        
+        // Re-init lucide icons after DOM updates
+        document.addEventListener('alpine:initialized', () => {
+            setTimeout(() => lucide.createIcons(), 100);
+        });
+    </script>
+    
+    {% block scripts %}{% endblock %}
+</body>
+</html>

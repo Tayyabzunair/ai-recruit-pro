@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+{% block title %}500 - Server Error{% endblock %}
+{% block content %}
+<div class="min-h-screen flex items-center justify-center px-6 bg-gradient-to-br from-slate-50 to-indigo-50 dark:from-dark-300 dark:to-dark-200">
+    <div class="text-center max-w-md" data-aos="fade-up">
+        <div class="text-9xl font-display font-bold gradient-text mb-4">500</div>
+        <h1 class="text-3xl font-bold text-slate-900 dark:text-white mb-3">Something Went Wrong</h1>
+        <p class="text-slate-600 dark:text-slate-400 mb-8">
+            We're experiencing a server error on our end. Our team has been notified — please try again in a moment.
+        </p>
+        <a href="{{ url_for('main.index') }}" 
+           class="inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-primary-600 to-purple-600 text-white rounded-xl font-semibold shadow-lg hover:shadow-xl hover:scale-105 transition">
+            <i data-lucide="home" class="w-4 h-4"></i> Go Home
+        </a>
+    </div>
+</div>
+{% endblock %}

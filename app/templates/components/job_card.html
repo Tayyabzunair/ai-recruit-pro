@@ -1,0 +1,32 @@
+<div class="bg-white rounded-2xl border border-slate-200 p-5 hover:shadow-xl hover:border-primary-300 transition-all group">
+    <div class="flex items-start justify-between mb-3">
+        <div class="w-10 h-10 bg-gradient-to-br from-primary-500 to-purple-600 rounded-xl flex items-center justify-center text-white font-bold flex-shrink-0">
+            {{ job.title[0].upper() }}
+        </div>
+        <span class="px-2.5 py-1 bg-primary-50 text-primary-700 text-xs font-semibold rounded-full">{{ job.job_type }}</span>
+    </div>
+    
+    <h3 class="font-bold text-slate-900 mb-1 group-hover:text-primary-600 transition">{{ job.title }}</h3>
+    <p class="text-sm text-slate-600 mb-3">{{ job.company or 'Company' }} · {{ job.location }}</p>
+    
+    <div class="flex flex-wrap gap-1.5 mb-4">
+        {% for skill in job.skills_list[:4] %}
+            <span class="px-2 py-0.5 bg-slate-100 text-slate-700 text-xs rounded">{{ skill }}</span>
+        {% endfor %}
+    </div>
+    
+    <div class="flex items-center justify-between pt-3 border-t border-slate-100">
+        <div class="text-sm">
+            <div class="text-xs text-slate-500">Salary</div>
+            <div class="font-semibold text-emerald-600">{{ job.salary_range }}</div>
+        </div>
+        
+        {% if applied_job_ids and job.id in applied_job_ids %}
+            <span class="px-3 py-1.5 bg-emerald-50 text-emerald-700 text-xs font-semibold rounded-lg">✓ Applied</span>
+        {% else %}
+            <a href="{{ url_for('candidate.job_detail', job_id=job.id) }}" class="px-3 py-1.5 bg-primary-600 text-white text-xs font-semibold rounded-lg hover:bg-primary-700 transition">
+                View Details
+            </a>
+        {% endif %}
+    </div>
+</div>

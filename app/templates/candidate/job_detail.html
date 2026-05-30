@@ -1,0 +1,109 @@
+{% extends "base.html" %}
+{% block title %}{{ job.title }} | AI Recruit Pro{% endblock %}
+
+{% block content %}
+{% include 'components/navbar.html' %}
+
+<div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    
+    <a href="{{ url_for('candidate.jobs') }}" class="inline-flex items-center gap-1 text-sm text-slate-600 hover:text-primary-600 mb-4">
+        <i data-lucide="arrow-left" class="w-4 h-4"></i> Back to jobs
+    </a>
+    
+    <!-- Header -->
+    <div class="bg-white rounded-2xl border border-slate-200 p-8 mb-6" data-aos="fade-up">
+        <div class="flex flex-col md:flex-row md:items-start md:justify-between gap-4 mb-6">
+            <div class="flex items-start gap-4">
+                <div class="w-16 h-16 rounded-2xl bg-gradient-to-br from-primary-500 to-purple-600 flex items-center justify-center text-white text-2xl font-bold flex-shrink-0">
+                    {{ job.title[0].upper() }}
+                </div>
+                <div>
+                    <h1 class="text-2xl md:text-3xl font-display font-bold text-slate-900">{{ job.title }}</h1>
+                    <p class="text-slate-600 mt-1">{{ job.company or 'Company' }}</p>
+                    <div class="flex flex-wrap items-center gap-3 mt-3 text-sm">
+                        <span class="flex items-center gap-1 text-slate-600"><i data-lucide="map-pin" class="w-4 h-4"></i>{{ job.location }}</span>
+                        <span class="flex items-center gap-1 text-slate-600"><i data-lucide="briefcase" class="w-4 h-4"></i>{{ job.job_type }}</span>
+                        <span class="flex items-center gap-1 text-slate-600"><i data-lucide="trending-up" class="w-4 h-4"></i>{{ job.experience_level }}</span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="text-right">
+                <div class="text-xs text-slate-500 mb-1">Compensation</div>
+                <div class="text-xl font-bold text-emerald-600">{{ job.salary_range }}</div>
+            </div>
+        </div>
+        
+        <div class="flex flex-wrap gap-2 mb-6">
+            {% for skill in job.skills_list %}
+                <span class="px-3 py-1 bg-primary-50 text-primary-700 text-sm font-medium rounded-lg">{{ skill }}</span>
+            {% endfor %}
+        </div>
+        
+        <div class="flex items-center justify-between pt-6 border-t border-slate-100">
+            <div class="text-sm text-slate-500">
+                {% if job.deadline %}
+                    Deadline: <strong class="text-slate-900">{{ job.deadline.strftime('%b %d, %Y') }}</strong>
+                {% else %}
+                    Posted {{ job.created_at.strftime('%b %d, %Y') }}
+                {% endif %}
+            </div>
+            
+            {% if already_applied %}
+                <span class="px-5 py-3 bg-emerald-50 text-emerald-700 rounded-xl font-semibold flex items-center gap-2">
+                    <i data-lucide="check-circle-2" class="w-5 h-5"></i> Already Applied
+                </span>
+            {% elif job.is_expired %}
+                <span class="px-5 py-3 bg-red-50 text-red-700 rounded-xl font-semibold">Application Closed</span>
+            {% else %}
+                <a href="{{ url_for('candidate.apply', job_id=job.id) }}" 
+                   class="inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-primary-600 to-purple-600 text-white rounded-xl font-semibold shadow-lg shadow-primary-500/30 hover:scale-105 transition">
+                    Apply Now <i data-lucide="arrow-right" class="w-4 h-4"></i>
+                </a>
+            {% endif %}
+        </div>
+    </div>
+    
+    <!-- Content -->
+    <div class="grid md:grid-cols-3 gap-6">
+        <div class="md:col-span-2 space-y-6">
+            
+            <div class="bg-white rounded-2xl border border-slate-200 p-6">
+                <h2 class="font-bold text-slate-900 mb-3 flex items-center gap-2">
+                    <i data-lucide="file-text" class="w-5 h-5 text-primary-600"></i> Description
+                </h2>
+                <p class="text-slate-700 whitespace-pre-line leading-relaxed">{{ job.description }}</p>
+            </div>
+            
+            {% if job.responsibilities %}
+            <div class="bg-white rounded-2xl border border-slate-200 p-6">
+                <h2 class="font-bold text-slate-900 mb-3 flex items-center gap-2">
+                    <i data-lucide="list-checks" class="w-5 h-5 text-purple-600"></i> Responsibilities
+                </h2>
+                <p class="text-slate-700 whitespace-pre-line leading-relaxed">{{ job.responsibilities }}</p>
+            </div>
+            {% endif %}
+            
+            {% if job.requirements %}
+            <div class="bg-white rounded-2xl border border-slate-200 p-6">
+                <h2 class="font-bold text-slate-900 mb-3 flex items-center gap-2">
+                    <i data-lucide="check-square" class="w-5 h-5 text-amber-600"></i> Requirements
+                </h2>
+                <p class="text-slate-700 whitespace-pre-line leading-relaxed">{{ job.requirements }}</p>
+            </div>
+            {% endif %}
+        </div>
+        
+        <div class="space-y-6">
+            {% if job.benefits %}
+            <div class="bg-gradient-to-br from-emerald-50 to-white rounded-2xl border border-emerald-200 p-6">
+                <h2 class="font-bold text-slate-900 mb-3 flex items-center gap-2">
+                    <i data-lucide="gift" class="w-5 h-5 text-emerald-600"></i> Benefits
+                </h2>
+                <p class="text-slate-700 whitespace-pre-line leading-relaxed text-sm">{{ job.benefits }}</p>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}

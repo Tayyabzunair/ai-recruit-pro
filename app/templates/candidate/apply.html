@@ -1,0 +1,108 @@
+{% extends "base.html" %}
+{% block title %}Apply | AI Recruit Pro{% endblock %}
+
+{% block content %}
+{% include 'components/navbar.html' %}
+
+<div class="max-w-2xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    
+    <a href="{{ url_for('candidate.job_detail', job_id=job.id) }}" class="inline-flex items-center gap-1 text-sm text-slate-600 dark:text-slate-400 hover:text-primary-600 mb-4">
+        <i data-lucide="arrow-left" class="w-4 h-4"></i> Back to job
+    </a>
+    
+    <!-- Progress -->
+    <div class="flex items-center gap-2 mb-6">
+        <div class="flex items-center gap-2">
+            <div class="w-8 h-8 bg-primary-600 text-white rounded-full flex items-center justify-center text-sm font-bold">1</div>
+            <span class="text-sm font-semibold text-slate-900 dark:text-white">Upload Resume</span>
+        </div>
+        <div class="flex-1 h-0.5 bg-slate-200 dark:bg-slate-700"></div>
+        <div class="flex items-center gap-2">
+            <div class="w-8 h-8 bg-slate-200 dark:bg-slate-700 text-slate-600 dark:text-slate-300 rounded-full flex items-center justify-center text-sm font-bold">2</div>
+            <span class="text-sm text-slate-500 dark:text-slate-400">Verify Details</span>
+        </div>
+        <div class="flex-1 h-0.5 bg-slate-200 dark:bg-slate-700"></div>
+        <div class="flex items-center gap-2">
+            <div class="w-8 h-8 bg-slate-200 dark:bg-slate-700 text-slate-600 dark:text-slate-300 rounded-full flex items-center justify-center text-sm font-bold">3</div>
+            <span class="text-sm text-slate-500 dark:text-slate-400">Submit</span>
+        </div>
+    </div>
+    
+    <div class="bg-white dark:bg-dark-100 rounded-2xl border border-slate-200 dark:border-slate-700 p-8" data-aos="fade-up">
+        <div class="text-center mb-6">
+            <div class="inline-flex items-center gap-2 px-3 py-1 bg-primary-50 dark:bg-primary-500/10 text-primary-700 dark:text-primary-400 text-xs font-semibold rounded-full mb-3">
+                <i data-lucide="briefcase" class="w-3 h-3"></i> {{ job.title }}
+            </div>
+            <h1 class="text-2xl font-display font-bold text-slate-900 dark:text-white">Upload Your Resume</h1>
+            <p class="text-slate-600 dark:text-slate-400 mt-1">Our AI will extract your info automatically</p>
+        </div>
+        
+        <form method="POST" enctype="multipart/form-data" id="apply-form">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+            
+            <label for="resume" class="block cursor-pointer">
+                <div class="border-2 border-dashed border-slate-300 dark:border-slate-600 rounded-2xl p-12 text-center hover:border-primary-500 hover:bg-primary-50/50 dark:hover:bg-primary-500/5 transition" id="drop-area">
+                    <div class="w-16 h-16 mx-auto bg-gradient-to-br from-primary-100 to-purple-100 dark:from-primary-500/20 dark:to-purple-500/20 rounded-2xl flex items-center justify-center mb-4">
+                        <i data-lucide="cloud-upload" class="w-8 h-8 text-primary-600 dark:text-primary-400"></i>
+                    </div>
+                    <h3 class="font-semibold text-slate-900 dark:text-white mb-1">Click to upload PDF</h3>
+                    <p class="text-sm text-slate-500 dark:text-slate-400">or drag and drop</p>
+                    <p class="text-xs text-slate-400 dark:text-slate-500 mt-2">PDF only, max 10MB</p>
+                </div>
+                <input type="file" id="resume" name="resume" accept=".pdf" required class="hidden">
+            </label>
+            
+            <div id="file-info" class="mt-4 hidden p-4 bg-emerald-50 dark:bg-emerald-500/10 border border-emerald-200 dark:border-emerald-500/30 rounded-xl flex items-center gap-3">
+                <i data-lucide="file-text" class="w-5 h-5 text-emerald-600 dark:text-emerald-400"></i>
+                <span id="file-name" class="font-medium text-emerald-700 dark:text-emerald-400 flex-1"></span>
+                <button type="button" onclick="clearFile()" class="text-emerald-700 dark:text-emerald-400 hover:text-emerald-900">
+                    <i data-lucide="x" class="w-4 h-4"></i>
+                </button>
+            </div>
+            
+            <button type="submit" id="submit-btn" disabled
+                    class="w-full mt-6 py-3 bg-gradient-to-r from-primary-600 to-purple-600 text-white font-semibold rounded-xl shadow-lg shadow-primary-500/30 hover:scale-[1.02] transition-all disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100 flex items-center justify-center gap-2">
+                <span id="btn-icon"><i data-lucide="sparkles" class="w-4 h-4"></i></span>
+                <span id="btn-text">Analyze with AI</span>
+            </button>
+        </form>
+    </div>
+</div>
+
+<script>
+const fileInput = document.getElementById('resume');
+const fileInfo = document.getElementById('file-info');
+const fileName = document.getElementById('file-name');
+const submitBtn = document.getElementById('submit-btn');
+const form = document.getElementById('apply-form');
+const btnText = document.getElementById('btn-text');
+const btnIcon = document.getElementById('btn-icon');
+
+fileInput.addEventListener('change', function() {
+    if (this.files[0]) {
+        fileName.textContent = this.files[0].name;
+        fileInfo.classList.remove('hidden');
+        submitBtn.disabled = false;
+        lucide.createIcons();
+    }
+});
+
+function clearFile() {
+    fileInput.value = '';
+    fileInfo.classList.add('hidden');
+    submitBtn.disabled = true;
+}
+
+form.addEventListener('submit', function() {
+    submitBtn.disabled = true;
+    // Replace sparkles icon with animated SVG spinner
+    btnIcon.innerHTML = `
+        <svg class="animate-spin h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+        </svg>
+    `;
+    btnText.textContent = 'AI is analyzing your resume...';
+});
+</script>
+{% endblock %}

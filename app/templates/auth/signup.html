@@ -1,0 +1,147 @@
+{% extends "base.html" %}
+
+{% block title %}Sign Up | AI Recruit Pro{% endblock %}
+
+{% block content %}
+<div class="min-h-screen flex">
+    
+    <!-- Left Side - Illustration -->
+    <div class="hidden lg:flex flex-1 relative overflow-hidden animated-bg items-center justify-center">
+        <div class="absolute inset-0 bg-gradient-to-br from-purple-600/80 to-pink-600/80"></div>
+        
+        <div class="relative z-10 max-w-md text-white p-12" data-aos="fade-right">
+            <h2 class="text-4xl font-display font-bold mb-4 leading-tight">
+                Start your journey with AI Recruit Pro
+            </h2>
+            <p class="text-lg text-white/90 mb-8">
+                Whether you're hiring or job-hunting, our AI makes it effortless.
+            </p>
+            
+            <div class="space-y-4">
+                <div class="flex items-start gap-3">
+                    <i data-lucide="check-circle-2" class="w-6 h-6 text-emerald-300 flex-shrink-0 mt-0.5"></i>
+                    <div>
+                        <div class="font-semibold">Free to get started</div>
+                        <div class="text-sm text-white/80">No credit card required</div>
+                    </div>
+                </div>
+                <div class="flex items-start gap-3">
+                    <i data-lucide="check-circle-2" class="w-6 h-6 text-emerald-300 flex-shrink-0 mt-0.5"></i>
+                    <div>
+                        <div class="font-semibold">AI-powered matching</div>
+                        <div class="text-sm text-white/80">Find the right fit instantly</div>
+                    </div>
+                </div>
+                <div class="flex items-start gap-3">
+                    <i data-lucide="check-circle-2" class="w-6 h-6 text-emerald-300 flex-shrink-0 mt-0.5"></i>
+                    <div>
+                        <div class="font-semibold">Secure & private</div>
+                        <div class="text-sm text-white/80">Your data is encrypted</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Right Side - Form -->
+    <div class="flex-1 flex items-center justify-center px-6 py-12 bg-white">
+        <div class="w-full max-w-md" data-aos="fade-left">
+            
+            <a href="{{ url_for('main.index') }}" class="inline-flex items-center gap-2 mb-10">
+                <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-primary-500 to-purple-600 flex items-center justify-center shadow-lg shadow-primary-500/30">
+                    <i data-lucide="sparkles" class="w-5 h-5 text-white"></i>
+                </div>
+                <span class="text-xl font-display font-bold gradient-text">AI Recruit Pro</span>
+            </a>
+            
+            <h1 class="text-3xl font-display font-bold text-slate-900 mb-2">Create your account</h1>
+            <p class="text-slate-600 mb-8">Get started in less than 2 minutes</p>
+            
+            <form method="POST" action="{{ url_for('auth.signup') }}" class="space-y-4">
+                {{ form.hidden_tag() }}
+                
+                <!-- Name -->
+                <div>
+                    <label class="block text-sm font-semibold text-slate-700 mb-2">Full Name</label>
+                    <div class="relative">
+                        <i data-lucide="user" class="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400"></i>
+                        {{ form.name(class="w-full pl-12 pr-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:border-primary-500 focus:ring-4 focus:ring-primary-100 outline-none transition", placeholder="John Doe") }}
+                    </div>
+                    {% for error in form.name.errors %}<p class="text-red-500 text-sm mt-1">{{ error }}</p>{% endfor %}
+                </div>
+                
+                <!-- Email -->
+                <div>
+                    <label class="block text-sm font-semibold text-slate-700 mb-2">Email Address</label>
+                    <div class="relative">
+                        <i data-lucide="mail" class="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400"></i>
+                        {{ form.email(class="w-full pl-12 pr-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:border-primary-500 focus:ring-4 focus:ring-primary-100 outline-none transition", placeholder="you@company.com") }}
+                    </div>
+                    {% for error in form.email.errors %}<p class="text-red-500 text-sm mt-1">{{ error }}</p>{% endfor %}
+                </div>
+                
+                <!-- Password -->
+                <div x-data="{ show: false }">
+                    <label class="block text-sm font-semibold text-slate-700 mb-2">Password</label>
+                    <div class="relative">
+                        <i data-lucide="lock" class="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400"></i>
+                        <input :type="show ? 'text' : 'password'" name="password" required
+                               class="w-full pl-12 pr-12 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:border-primary-500 focus:ring-4 focus:ring-primary-100 outline-none transition"
+                               placeholder="At least 8 characters">
+                        <button type="button" @click="show = !show" class="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600">
+                            <i :data-lucide="show ? 'eye-off' : 'eye'" class="w-5 h-5" x-init="$nextTick(() => lucide.createIcons())"></i>
+                        </button>
+                    </div>
+                    {% for error in form.password.errors %}<p class="text-red-500 text-sm mt-1">{{ error }}</p>{% endfor %}
+                </div>
+                
+                <!-- Confirm Password -->
+                <div>
+                    <label class="block text-sm font-semibold text-slate-700 mb-2">Confirm Password</label>
+                    <div class="relative">
+                        <i data-lucide="shield-check" class="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400"></i>
+                        {{ form.confirm_password(class="w-full pl-12 pr-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:border-primary-500 focus:ring-4 focus:ring-primary-100 outline-none transition", placeholder="Re-enter password") }}
+                    </div>
+                    {% for error in form.confirm_password.errors %}<p class="text-red-500 text-sm mt-1">{{ error }}</p>{% endfor %}
+                </div>
+                
+                <!-- Role Selection -->
+                <div>
+                    <label class="block text-sm font-semibold text-slate-700 mb-2">I want to...</label>
+                    <div class="grid grid-cols-2 gap-3" x-data="{ role: 'Candidate' }">
+                        <label class="cursor-pointer" :class="role === 'Candidate' ? '' : ''">
+                            <input type="radio" name="role" value="Candidate" x-model="role" class="sr-only" checked>
+                            <div class="p-4 border-2 rounded-xl transition" 
+                                 :class="role === 'Candidate' ? 'border-primary-500 bg-primary-50' : 'border-slate-200 hover:border-slate-300'">
+                                <i data-lucide="briefcase" class="w-6 h-6 mb-2" :class="role === 'Candidate' ? 'text-primary-600' : 'text-slate-400'"></i>
+                                <div class="font-semibold text-sm">Find Jobs</div>
+                                <div class="text-xs text-slate-500">As a candidate</div>
+                            </div>
+                        </label>
+                        <label class="cursor-pointer">
+                            <input type="radio" name="role" value="Owner" x-model="role" class="sr-only">
+                            <div class="p-4 border-2 rounded-xl transition"
+                                 :class="role === 'Owner' ? 'border-primary-500 bg-primary-50' : 'border-slate-200 hover:border-slate-300'">
+                                <i data-lucide="building-2" class="w-6 h-6 mb-2" :class="role === 'Owner' ? 'text-primary-600' : 'text-slate-400'"></i>
+                                <div class="font-semibold text-sm">Hire Talent</div>
+                                <div class="text-xs text-slate-500">As a recruiter</div>
+                            </div>
+                        </label>
+                    </div>
+                </div>
+                
+                <!-- Submit -->
+                <button type="submit" class="w-full py-3 bg-gradient-to-r from-primary-600 to-purple-600 text-white font-semibold rounded-xl shadow-lg shadow-primary-500/30 hover:shadow-xl hover:scale-[1.02] transition-all flex items-center justify-center gap-2 mt-6">
+                    Create Account
+                    <i data-lucide="arrow-right" class="w-4 h-4"></i>
+                </button>
+            </form>
+            
+            <p class="text-center text-sm text-slate-600 mt-6">
+                Already have an account? 
+                <a href="{{ url_for('auth.login') }}" class="font-semibold text-primary-600 hover:text-primary-700">Sign in</a>
+            </p>
+        </div>
+    </div>
+</div>
+{% endblock %}

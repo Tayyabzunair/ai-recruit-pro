@@ -1,0 +1,165 @@
+{% extends "base.html" %}
+{% block title %}{{ application.full_name }} | Candidate Detail{% endblock %}
+
+{% block content %}
+{% include 'components/navbar.html' %}
+
+<div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    
+    <a href="{{ url_for('owner.candidates') }}" class="inline-flex items-center gap-1 text-sm text-slate-600 hover:text-primary-600 mb-4">
+        <i data-lucide="arrow-left" class="w-4 h-4"></i> Back to candidates
+    </a>
+    
+    <div class="grid lg:grid-cols-3 gap-6">
+        
+        <!-- Main Content -->
+        <div class="lg:col-span-2 space-y-6">
+            
+            <!-- Profile Header -->
+            <div class="bg-white rounded-2xl border border-slate-200 p-6" data-aos="fade-up">
+                <div class="flex items-start gap-4">
+                    <div class="w-20 h-20 rounded-2xl bg-gradient-to-br from-primary-500 to-purple-600 flex items-center justify-center text-white text-3xl font-bold flex-shrink-0">
+                        {{ application.full_name[0].upper() if application.full_name else '?' }}
+                    </div>
+                    <div class="flex-1">
+                        <h1 class="text-2xl font-display font-bold text-slate-900">{{ application.full_name }}</h1>
+                        <p class="text-slate-600">Applied for <strong>{{ application.job.title }}</strong></p>
+                        <div class="flex flex-wrap items-center gap-3 mt-3 text-sm">
+                            <span class="flex items-center gap-1 text-slate-600"><i data-lucide="mail" class="w-4 h-4"></i>{{ application.email }}</span>
+                            <span class="flex items-center gap-1 text-slate-600"><i data-lucide="phone" class="w-4 h-4"></i>{{ application.phone }}</span>
+                            <span class="flex items-center gap-1 text-slate-600"><i data-lucide="calendar" class="w-4 h-4"></i>{{ application.applied_at.strftime('%b %d, %Y') }}</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- AI Summary -->
+            {% if application.ai_summary %}
+            <div class="bg-gradient-to-br from-primary-50 to-purple-50 rounded-2xl border border-primary-200 p-6" data-aos="fade-up">
+                <div class="flex items-center gap-2 mb-3">
+                    <div class="w-8 h-8 bg-gradient-to-br from-primary-500 to-purple-600 rounded-lg flex items-center justify-center">
+                        <i data-lucide="sparkles" class="w-4 h-4 text-white"></i>
+                    </div>
+                    <h2 class="font-bold text-slate-900">AI Summary</h2>
+                </div>
+                <p class="text-slate-700 leading-relaxed">{{ application.ai_summary }}</p>
+            </div>
+            {% endif %}
+            
+            <!-- Skills Analysis -->
+            <div class="bg-white rounded-2xl border border-slate-200 p-6" data-aos="fade-up">
+                <h2 class="font-bold text-slate-900 mb-4 flex items-center gap-2">
+                    <i data-lucide="target" class="w-5 h-5 text-primary-600"></i> Skills Analysis
+                </h2>
+                
+                <div class="space-y-4">
+                    {% if skill_analysis.matched %}
+                    <div>
+                        <div class="flex items-center gap-2 mb-2">
+                            <i data-lucide="check-circle-2" class="w-4 h-4 text-emerald-600"></i>
+                            <span class="text-sm font-semibold text-slate-700">Matched Skills ({{ skill_analysis.matched|length }})</span>
+                        </div>
+                        <div class="flex flex-wrap gap-1.5">
+                            {% for skill in skill_analysis.matched %}
+                                <span class="px-2.5 py-1 bg-emerald-50 text-emerald-700 text-xs font-medium rounded-md">{{ skill }}</span>
+                            {% endfor %}
+                        </div>
+                    </div>
+                    {% endif %}
+                    
+                    {% if skill_analysis.missing %}
+                    <div>
+                        <div class="flex items-center gap-2 mb-2">
+                            <i data-lucide="x-circle" class="w-4 h-4 text-red-600"></i>
+                            <span class="text-sm font-semibold text-slate-700">Missing Skills ({{ skill_analysis.missing|length }})</span>
+                        </div>
+                        <div class="flex flex-wrap gap-1.5">
+                            {% for skill in skill_analysis.missing %}
+                                <span class="px-2.5 py-1 bg-red-50 text-red-700 text-xs font-medium rounded-md">{{ skill }}</span>
+                            {% endfor %}
+                        </div>
+                    </div>
+                    {% endif %}
+                    
+                    {% if skill_analysis.extra %}
+                    <div>
+                        <div class="flex items-center gap-2 mb-2">
+                            <i data-lucide="plus-circle" class="w-4 h-4 text-blue-600"></i>
+                            <span class="text-sm font-semibold text-slate-700">Additional Skills ({{ skill_analysis.extra|length }})</span>
+                        </div>
+                        <div class="flex flex-wrap gap-1.5">
+                            {% for skill in skill_analysis.extra %}
+                                <span class="px-2.5 py-1 bg-blue-50 text-blue-700 text-xs font-medium rounded-md">{{ skill }}</span>
+                            {% endfor %}
+                        </div>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+            
+            <!-- Education & Experience -->
+            <div class="bg-white rounded-2xl border border-slate-200 p-6" data-aos="fade-up">
+                <h2 class="font-bold text-slate-900 mb-4">Background</h2>
+                <div class="grid sm:grid-cols-2 gap-4">
+                    <div>
+                        <div class="text-sm text-slate-500 mb-1">Education</div>
+                        <div class="font-medium">{{ application.education or 'Not specified' }}</div>
+                    </div>
+                    <div>
+                        <div class="text-sm text-slate-500 mb-1">Experience</div>
+                        <div class="font-medium">{{ application.experience_years }} years</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Sidebar -->
+        <div class="space-y-6">
+            
+            <!-- Match Score -->
+            <div class="bg-white rounded-2xl border border-slate-200 p-6 text-center" data-aos="fade-up">
+                {% set color = 'emerald' if application.match_score >= 80 else 'amber' if application.match_score >= 60 else 'red' %}
+                <div class="relative inline-flex items-center justify-center w-32 h-32 mb-3">
+                    <svg class="w-32 h-32 transform -rotate-90">
+                        <circle cx="64" cy="64" r="56" stroke="#e2e8f0" stroke-width="12" fill="none"/>
+                        <circle cx="64" cy="64" r="56" stroke="currentColor" stroke-width="12" fill="none"
+                                stroke-dasharray="{{ (application.match_score * 351.86 / 100)|round }} 351.86"
+                                class="text-{{ color }}-500"/>
+                    </svg>
+                    <div class="absolute text-3xl font-bold">{{ application.match_score|round|int }}%</div>
+                </div>
+                <div class="font-semibold text-slate-900">AI Match Score</div>
+                <div class="text-xs text-slate-500">Based on skills & experience</div>
+            </div>
+            
+            <!-- Actions -->
+            <div class="bg-white rounded-2xl border border-slate-200 p-6" data-aos="fade-up">
+                <h3 class="font-bold text-slate-900 mb-4">Update Status</h3>
+                <form method="POST" action="{{ url_for('owner.update_status', app_id=application.id) }}" class="space-y-3">
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                    <select name="status" class="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:border-primary-500 outline-none">
+                        {% for s in statuses %}
+                            <option value="{{ s }}" {{ 'selected' if application.status == s }}>{{ s }}</option>
+                        {% endfor %}
+                    </select>
+                    <textarea name="notes" rows="3" placeholder="Add private notes..." class="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:border-primary-500 outline-none text-sm">{{ application.notes or '' }}</textarea>
+                    <button type="submit" class="w-full py-2.5 bg-gradient-to-r from-primary-600 to-purple-600 text-white rounded-xl font-semibold">
+                        Update
+                    </button>
+                </form>
+            </div>
+            
+            <!-- Resume -->
+            <div class="bg-white rounded-2xl border border-slate-200 p-6" data-aos="fade-up">
+                <h3 class="font-bold text-slate-900 mb-3 flex items-center gap-2">
+                    <i data-lucide="file-text" class="w-5 h-5 text-red-600"></i> Resume
+                </h3>
+                <a href="{{ url_for('owner.view_resume', app_id=application.id) }}" target="_blank" 
+                   class="flex items-center justify-center gap-2 w-full py-3 bg-red-50 text-red-700 rounded-xl font-semibold hover:bg-red-100 transition">
+                    <i data-lucide="external-link" class="w-4 h-4"></i> View PDF
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

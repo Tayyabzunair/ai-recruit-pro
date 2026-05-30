@@ -1,0 +1,46 @@
+{% extends "emails/_base.html" %}
+{% block content %}
+<h2 style="margin: 0 0 16px 0; color: #1e293b; font-size: 22px;">📬 Application Update</h2>
+<p style="margin: 0 0 24px 0; color: #475569; line-height: 1.6; font-size: 15px;">
+    Hi <strong>{{ application.full_name }}</strong>, there's an update on your application for <strong>{{ job.title }}</strong>.
+</p>
+
+<!-- Status badge -->
+<div style="text-align: center; margin: 24px 0;">
+    {% if new_status == 'Hired' %}{% set bg = '#dcfce7' %}{% set tc = '#15803d' %}
+    {% elif new_status == 'Rejected' %}{% set bg = '#fee2e2' %}{% set tc = '#b91c1c' %}
+    {% elif new_status == 'Interview' %}{% set bg = '#dbeafe' %}{% set tc = '#1d4ed8' %}
+    {% elif new_status == 'Shortlisted' %}{% set bg = '#fef3c7' %}{% set tc = '#b45309' %}
+    {% elif new_status == 'Reviewed' %}{% set bg = '#ede9fe' %}{% set tc = '#6d28d9' %}
+    {% else %}{% set bg = '#f1f5f9' %}{% set tc = '#475569' %}{% endif %}
+    
+    <div style="display: inline-block; padding: 12px 32px; background: {{ bg }}; color: {{ tc }}; border-radius: 50px; font-weight: 700; font-size: 18px;">
+        {{ new_status }}
+    </div>
+</div>
+
+<div style="background-color: #f8fafc; border-radius: 12px; padding: 20px; margin: 24px 0; border-left: 4px solid #6366F1;">
+    <p style="margin: 0; color: #1e293b; line-height: 1.6; font-size: 15px;">{{ message }}</p>
+</div>
+
+<table cellpadding="0" cellspacing="0" border="0" width="100%" style="background-color: #f8fafc; border-radius: 12px; padding: 20px; margin: 24px 0;">
+    <tr>
+        <td>
+            <p style="margin: 0 0 8px 0; color: #64748b; font-size: 13px; font-weight: 600;">JOB DETAILS</p>
+            <p style="margin: 0 0 4px 0; color: #1e293b; font-size: 15px; font-weight: 600;">{{ job.title }}</p>
+            <p style="margin: 0; color: #475569; font-size: 14px;">{{ job.company or '' }} · {{ job.location }}</p>
+        </td>
+    </tr>
+</table>
+
+<div style="text-align: center; margin: 24px 0;">
+    <a href="{{ view_url or '#' }}" 
+       style="display: inline-block; padding: 12px 28px; background: linear-gradient(135deg, #6366F1 0%, #A855F7 100%); color: white; text-decoration: none; border-radius: 10px; font-weight: 600; font-size: 14px;">
+        View My Applications →
+    </a>
+</div>
+
+<p style="margin: 16px 0 0 0; color: #94a3b8; font-size: 12px; text-align: center;">
+    You're receiving this update because you applied to {{ job.title }}.
+</p>
+{% endblock %}

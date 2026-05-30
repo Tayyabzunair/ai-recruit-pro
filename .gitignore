@@ -1,0 +1,44 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+venv/
+env/
+ENV/
+.venv
+
+# Flask
+instance/
+.webassets-cache
+
+# Database
+*.db
+*.sqlite
+*.sqlite3
+
+# Environment
+.env
+.env.local
+
+# IDE
+.vscode/
+.idea/
+*.swp
+.DS_Store
+
+# Uploads & Generated
+app/static/uploads/*
+!app/static/uploads/.gitkeep
+chroma_db/
+logs/
+*.log
+
+# Migrations (keep folder, ignore data)
+migrations/__pycache__/
+
+# Testing
+.pytest_cache/
+.coverage
+htmlcov/
